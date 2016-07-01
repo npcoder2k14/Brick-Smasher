@@ -20,6 +20,8 @@
 		var ctx = canvas.getContext("2d");
 		 //console.log(canvas);
 		 //console.log(ctx);
+		 var score = 0;
+		 var lives = 3;
 		 var rad=60;
 		 var dx=2;
 		 var dy=2;
@@ -34,12 +36,17 @@
          var brick_w = 75;
          var brick_h = 20;
          var brickPad = 10;
-         var brickOffsetTop=30;
+         var brickOffsetTop=60;
          var brickOffsetLeft = 30;
          var brickRad=15;
          var ballRad=10;
           var x=Math.floor(paddle_x);		 
 		 var y=canvas.height-paddle_h-30;
+
+		 document.addEventListener("mousemove",mouseMoveHandler,false);
+		 //console.log("hii");
+		 document.addEventListener("keydown",keyDownHandler,false);
+         document.addEventListener("keyup",keyUpHandler,false);
 
          var bricks=[];
          var map={};
@@ -54,6 +61,18 @@
          	}
          }
          
+         function drawScore() 
+         {
+         	ctx.font="20px Arial";
+         	ctx.fillStyle = "#0095DD";
+         	ctx.fillText("Score: "+score,8,20);
+         }
+         function drawLives()
+         {
+         	ctx.font="20px Arial";
+         	ctx.fillStyle = "#0095DD";
+         	ctx.fillText("Chances Left: "+lives,canvas.width-180,20);
+         }
          function drawBricks()
          {
          	for(c=0;c<brickColCount;c++)
@@ -122,8 +141,14 @@
          		left=false;
          	//console.log("Up");
          }
-
-
+         function mouseMoveHandler(e)
+         {
+            var relative_x = e.clientX-canvas.offsetLeft;
+            if(relative_x > 0 && relative_x < canvas.width)
+            {
+            	paddle_x=relative_x - paddle_w/2;
+            }
+         }
 
 		 function draw()
 		 {
@@ -131,12 +156,14 @@
 		 	ctx.clearRect(0,0,canvas.width,canvas.height);
             drawPaddle();
             drawBricks();
+            drawScore();
+            drawLives();
 		 	ctx.beginPath();
 		 	ctx.arc(x,y,ballRad,0,Math.PI*2);
 		 	ctx.fillStyle = "#0095DD";
 		 	ctx.fill();
 		 	ctx.closePath();
-
+            //console.log(score);
 
 		 	y=y+dy;
 		 	x+=dx;
@@ -151,7 +178,8 @@
                    map[[x+i,y+j]]=-1;
                    dy=-1*dy;
                    no_of_bricks--;
-
+                   score++;
+                   //drawScore();
                    return ;
 		 	      }
 		 		}
@@ -183,26 +211,38 @@
             	{
             	   dy=-1*dy;	
             	}
-            	else
+            	else 
             	{
-            		alert("Game Over");
-            		document.location.reload();
+            		lives--;
+            		if(lives==0)
+            		{
+            		   alert("Game Over");
+            		 document.location.reload();	
+            		}
+            		else
+            		{
+            		   x=canvas.width/2;
+            		   y=canvas.height-30;
+            		   dx=2;
+            		   dy=-2;
+            		   paddle_x = (canvas.width-paddle_w)/2;	
+            		}
+            		
             	}
  				
             }
             
-            //console.log("value of x is "+x);
-            //console.log("value of y is "+y);
+            console.log("value of x is "+x);
+            console.log("value of y is "+y);
 		 	
 		 		
-		 	
+		 	//requestAnimationFrame(draw);
 		 }
-
-		 //console.log("hii");
-		 document.addEventListener("keydown",keyDownHandler,false);
-         document.addEventListener("keyup",keyUpHandler,false);
+		 
 		 setInterval(draw,8);
 		 //console.log(map);
+		 draw();
+		// requestAnimationFrame(draw);
 	</script>
 	<div class="center">
      <h1>Brick-Smasher</h1>		
