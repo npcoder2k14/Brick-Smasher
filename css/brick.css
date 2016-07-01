@@ -1,0 +1,13 @@
+.center {
+	position: relative;
+    margin: auto;
+    width: 40%;
+    border: 3px solid #73AD21;
+    padding: 10px;
+    top: 30px;
+}
+h1 {
+	position: relative;
+	left: 170px;
+	top: 10px;
+}

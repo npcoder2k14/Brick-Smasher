@@ -4,6 +4,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/brick.css">
 	<title>My First Game Using Js</title>
 	<style type="text/css">
 		*{ padding:0; margin:0; }
@@ -12,8 +13,8 @@
 
 </head>
 <body>
-	<canvas id="myCanvas" width="480" height="320"></canvas>
-
+	<canvas id="myCanvas" width="660" height="500"></canvas>
+     
 	<script type="text/javascript">
 		var canvas=document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
@@ -24,18 +25,18 @@
 		 var dy=2;
 		 
 		 var paddle_h=10;
-		 var paddle_w=75;
+		 var paddle_w=95;
 		 var paddle_x=(canvas.width-paddle_w)/2;
          var left=false;
          var right = false;
-         var brickRowCount = 3;
-         var brickColCount = 15;
+         var brickRowCount = 4;
+         var brickColCount = 16;
          var brick_w = 75;
          var brick_h = 20;
          var brickPad = 10;
          var brickOffsetTop=30;
          var brickOffsetLeft = 30;
-         var brickRad=10;
+         var brickRad=15;
          var ballRad=10;
           var x=Math.floor(paddle_x);		 
 		 var y=canvas.height-paddle_h-30;
@@ -44,10 +45,10 @@
          var map={};
          var no_of_bricks=brickRowCount*brickColCount;
 
-         for(c=0;c<500;c++)
+         for(c=0;c<brickColCount;c++)
          {
          	bricks[c]=[];
-         	for(r=0;r<500;r++)
+         	for(r=0;r<brickRowCount;r++)
          	{
          		bricks[c][r] = {x:0,y:0};
          	}
@@ -200,8 +201,11 @@
 		 //console.log("hii");
 		 document.addEventListener("keydown",keyDownHandler,false);
          document.addEventListener("keyup",keyUpHandler,false);
-		 setInterval(draw,10);
+		 setInterval(draw,8);
 		 //console.log(map);
 	</script>
+	<div class="center">
+     <h1>Brick-Smasher</h1>		
+	</div>
 </body>
 </html>
