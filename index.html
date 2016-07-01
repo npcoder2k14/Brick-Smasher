@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+	<title>My First Game Using Js</title>
+	<style type="text/css">
+		*{ padding:0; margin:0; }
+		canvas { background: #eee; display: block; margin: 0 auto;}
+	</style>
+
+</head>
+<body>
+	<canvas id="myCanvas" width="480" height="320"></canvas>
+
+	<script type="text/javascript">
+		var canvas=document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		 //console.log(canvas);
+		 //console.log(ctx);
+		 var rad=60;
+		 var dx=2;
+		 var dy=2;
+		 
+		 var paddle_h=10;
+		 var paddle_w=75;
+		 var paddle_x=(canvas.width-paddle_w)/2;
+         var left=false;
+         var right = false;
+         var brickRowCount = 3;
+         var brickColCount = 15;
+         var brick_w = 75;
+         var brick_h = 20;
+         var brickPad = 10;
+         var brickOffsetTop=30;
+         var brickOffsetLeft = 30;
+         var brickRad=10;
+         var ballRad=10;
+          var x=Math.floor(paddle_x);		 
+		 var y=canvas.height-paddle_h-30;
+
+         var bricks=[];
+         var map={};
+         var no_of_bricks=brickRowCount*brickColCount;
+
+         for(c=0;c<500;c++)
+         {
+         	bricks[c]=[];
+         	for(r=0;r<500;r++)
+         	{
+         		bricks[c][r] = {x:0,y:0};
+         	}
+         }
+         
+         function drawBricks()
+         {
+         	for(c=0;c<brickColCount;c++)
+         	{
+         		//var prevBrick=brickOffsetLeft;
+         		for(r=0;r<brickRowCount;r++)
+         		{
+         			
+         			var brickX = (c*(2*brickRad + brickPad)) + brickOffsetLeft;
+         			//prevBrick=brickX+brick_w;
+         			var brickY = (r*(2*brickRad + brickPad)) + brickOffsetTop;
+         			bricks[c][r].x = brickX;
+         			bricks[c][r].y = brickY;
+         			if(map[[brickX,brickY]]!=-1)
+         			{
+         				map[[brickX,brickY]]=1;
+         				ctx.beginPath();
+         			    ctx.arc(brickX,brickY,brickRad,0,Math.PI*2); 
+         			    ctx.fillStyle = "red";
+         			    ctx.fill();
+         			    ctx.closePath();
+         			    //console.log(map);
+         			}
+         			
+         			
+         		}
+         	}
+         }
+         
+		 function drawPaddle()
+		 {
+		 	if(right && paddle_x < canvas.width-paddle_w)
+		 	{
+		 		paddle_x+=7;
+		 	}
+		 	else if(left && paddle_x>0)
+		 	{
+		 		paddle_x-=7;
+		 	}
+
+		 	ctx.beginPath();
+		 	ctx.rect(paddle_x,canvas.height-paddle_h,paddle_w,paddle_h);
+		 	ctx.fillStyle="green";
+		 	ctx.fill();
+		 	ctx.closePath();
+		 }
+		 
+		 function keyDownHandler(e)
+		 {
+		 	if(e.keyCode==39)
+		 	{
+		 		right = true;
+		 	}
+		 	else if(e.keyCode==37)
+		 	{
+		 		left = true;
+		 	}
+		 	//console.log("Down");
+		 }
+
+         function keyUpHandler(e)
+         {
+         	if(e.keyCode==39)
+         		right=false;
+         	else if(e.keyCode==37)
+         		left=false;
+         	//console.log("Up");
+         }
+
+
+
+		 function draw()
+		 {
+
+		 	ctx.clearRect(0,0,canvas.width,canvas.height);
+            drawPaddle();
+            drawBricks();
+		 	ctx.beginPath();
+		 	ctx.arc(x,y,ballRad,0,Math.PI*2);
+		 	ctx.fillStyle = "#0095DD";
+		 	ctx.fill();
+		 	ctx.closePath();
+
+
+		 	y=y+dy;
+		 	x+=dx;
+		 	//Collision Detection
+		 	for(var i=-ballRad;i<ballRad+1;i++)
+		 	{
+		 		for(var j=-ballRad;j<ballRad+1;j++)
+		 		{
+		 		  if(map[[x+i,y+j]]==1)
+		 	      {
+		 	   	   //console.log(x+i,y+j);
+                   map[[x+i,y+j]]=-1;
+                   dy=-1*dy;
+                   no_of_bricks--;
+
+                   return ;
+		 	      }
+		 		}
+		 	}
+		 	   
+		 	   	
+		 	if(no_of_bricks==0)
+                   {
+                   	alert("Wow...You Won the Game..For prize money send mail to npnarendrapal23@gmail.com :D");
+                   	  document.location.reload();
+                   }
+		 	
+		 	  	
+		 	//console.log(bricks[x][y].x);
+		 	//console.log(map);
+
+            if(x==canvas.width-10|| x==0)
+            {
+            //	console.log("width "+x);
+            	dx=-1*dx;
+            }
+            if(y==0)
+            {
+            	dy=-1*dy;
+            }
+            if(y==canvas.height-ballRad-paddle_h+2)
+            {
+            	if(x+ballRad>=paddle_x && x+ballRad<=paddle_x+paddle_w || x-ballRad>=paddle_x && x-ballRad<=paddle_x+paddle_w)
+            	{
+            	   dy=-1*dy;	
+            	}
+            	else
+            	{
+            		alert("Game Over");
+            		document.location.reload();
+            	}
+ 				
+            }
+            
+            //console.log("value of x is "+x);
+            //console.log("value of y is "+y);
+		 	
+		 		
+		 	
+		 }
+
+		 //console.log("hii");
+		 document.addEventListener("keydown",keyDownHandler,false);
+         document.addEventListener("keyup",keyUpHandler,false);
+		 setInterval(draw,10);
+		 //console.log(map);
+	</script>
+</body>
+</html>
